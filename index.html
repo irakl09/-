@@ -9,18 +9,19 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
-            body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                /* Background gradient */
-                background: linear-gradient(to bottom, #FFFFFF, #FFFF00, #808080);
-            }
     
-            .calendar {
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-            }
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        /* Background gradient */
+        background: linear-gradient(to bottom, #FFFFFF, blue, pink);
+    }
+
+    .calendar {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
         h1 {
             color: #333;
@@ -156,6 +157,33 @@
 
     // Generate the calendar and update the green count
     generateCalendar();
+</script>
+<script>
+    // Get the reference to the count element
+    const countElement = document.getElementById("count");
+
+    // Initialize the count and days counter
+    let count = 0;
+    let daysCounter = 0;
+
+    // Function to update the count and display it
+    function updateCount() {
+        countElement.textContent = count;
+    }
+
+    // Function to deduct one day every three days
+    function deductOneDayEveryThreeDays() {
+        // Check if it's every three days
+        if (daysCounter % 3 === 0) {
+            count--; // Deduct one day
+            updateCount(); // Update the count element
+        }
+
+        daysCounter++; // Increment the days counter
+    }
+
+    // Call the deductOneDayEveryThreeDays function regularly, e.g., using setInterval
+    setInterval(deductOneDayEveryThreeDays, 24 * 60 * 60 * 1000); // Run every 24 hours (1 day)
 </script>
 </body>
 </html>
