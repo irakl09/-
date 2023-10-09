@@ -9,19 +9,19 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
-    
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        /* Background gradient */
-        background: linear-gradient(to bottom, #FFFFFF, blue, pink);
-    }
 
-    .calendar {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            /* Background gradient */
+            background: linear-gradient(to bottom, #FFFFFF, blue, pink);
+        }
+
+        .calendar {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
         h1 {
             color: #333;
@@ -42,6 +42,11 @@
         .green {
             background-color: green;
             color: white;
+        }
+
+        .past-date {
+            background-color: red; /* Background color in red for past dates */
+            color: white; /* Text color for past dates */
         }
 
         #greenCount {
@@ -78,7 +83,7 @@
 <div class="calendar">
     <h1>ჯარის განრიგი</h1>
     <div id="calendar"></div>
-    <div id="greenCount">დარჩენილი მსახურობის დრო:81</div>
+    <div id="greenCount">დარჩენილი მსახურობის დრო: <span id="count">0</span></div>
 </div>
 <div id="audio-container">
     <audio id="audio-player">
@@ -88,50 +93,34 @@
     <button id="toggle-button">Play</button>
 </div>
 <script>
-    const audioPlayer = document.getElementById('audio-player');
-    const toggleButton = document.getElementById('toggle-button');
-    let isBlue = true;
-    let colorChangeInterval; // Declare the variable here
-
-    toggleButton.addEventListener('click', () => {
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-            toggleButton.textContent = 'Pause';
-            // Clear the color-changing interval when the button is clicked
-            clearInterval(colorChangeInterval);
-        } else {
-            audioPlayer.pause();
-            toggleButton.textContent = 'Play';
-            // Restart the color-changing interval when the button is paused
-            colorChangeInterval = setInterval(changeButtonColor, 2000);
-        }
-    });
-
-    // Function to change the button color between blue and white
-    function changeButtonColor() {
-        if (isBlue) {
-            toggleButton.style.backgroundColor = 'yellow';
-            toggleButton.style.color = 'blue';
-        } else {
-            toggleButton.style.backgroundColor = 'blue';
-            toggleButton.style.color = 'yellow';
-        }
-        isBlue = !isBlue;
-    }
-
-    // Initialize the color-changing interval
-    colorChangeInterval = setInterval(changeButtonColor, 2000);
-</script>
-<script>
+    // Function to generate the calendar and update the count of green boxes
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
         const countElement = document.getElementById("count");
         const startDate = new Date("2023-10-01");
         const endDate = new Date("2024-06-06");
 
+        const currentDateObj = new Date(); // Get the current date
+
         let currentDate = startDate;
-        let greenCount = 0;
         let dayCount = 0;
+
+        setInterval(() => {
+            const dateCells = document.querySelectorAll('.date-cell');
+
+            dateCells.forEach(dateCell => {
+                const cellDate = new Date(dateCell.dataset.date);
+                if (cellDate < currentDateObj) {
+                    dateCell.classList.add("past-date"); // Add a class for past dates
+                    dateCell.classList.remove("green"); // Remove the green class
+                }
+            });
+
+            // Count the number of green cells
+            const greenCells = document.querySelectorAll(".green");
+            countElement.textContent = greenCells.length;
+
+        }, 1000); // Check and update every second (adjust as needed)
 
         while (currentDate <= endDate) {
             const dateCell = document.createElement("div");
@@ -139,8 +128,9 @@
 
             if (dayCount === 0 || dayCount % 3 === 0) {
                 dateCell.classList.add("green");
-                greenCount++;
             }
+
+            dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
 
             dateCell.innerText = currentDate.toLocaleDateString("en-US", {
                 day: "2-digit",
@@ -151,39 +141,11 @@
             currentDate.setDate(currentDate.getDate() + 1);
             dayCount++;
         }
-
-        countElement.textContent = greenCount;
     }
 
-    // Generate the calendar and update the green count
+    // Generate the calendar and update the count initially
     generateCalendar();
-</script>
-<script>
-    // Get the reference to the count element
-    const countElement = document.getElementById("count");
 
-    // Initialize the count and days counter
-    let count = 0;
-    let daysCounter = 0;
-
-    // Function to update the count and display it
-    function updateCount() {
-        countElement.textContent = count;
-    }
-
-    // Function to deduct one day every three days
-    function deductOneDayEveryThreeDays() {
-        // Check if it's every three days
-        if (daysCounter % 3 === 0) {
-            count--; // Deduct one day
-            updateCount(); // Update the count element
-        }
-
-        daysCounter++; // Increment the days counter
-    }
-
-    // Call the deductOneDayEveryThreeDays function regularly, e.g., using setInterval
-    setInterval(deductOneDayEveryThreeDays, 24 * 60 * 60 * 1000); // Run every 24 hours (1 day)
 </script>
 </body>
 </html>
