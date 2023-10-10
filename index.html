@@ -53,30 +53,6 @@
             margin-top: 20px;
             font-size: 24px;
         }
-
-        /* Position the audio container and button on the upper-left corner */
-        #audio-container {
-            position: fixed;
-            top: 10px; /* Adjust the top position as needed */
-            left: 10px; /* Adjust the left position as needed */
-        }
-
-        /* Style the toggle button with neon light effect */
-        #toggle-button {
-            font-size: 16px;
-            padding: 5px 10px;
-            cursor: pointer;
-            background-color: #333; /* Background color for the neon effect */
-            color: green; /* Text color for the neon effect */
-            text-shadow: 10px 20px 100px rgba(0, 0, 500, 0.8); /* Neon glow effect */
-            box-shadow: 1px 1px 10px rgba(0, 0, 255, 0.8); /* Neon glow effect */
-        }
-
-        /* Style the audio player if needed */
-        audio {
-            width: 100%;
-            max-width: 400px;
-        }
     </style>
 </head>
 <body>
@@ -85,26 +61,7 @@
     <div id="calendar"></div>
     <div id="greenCount">დარჩენილი მსახურობის დრო: <span id="count">0</span></div>
 </div>
-<div id="audio-container">
-    <audio id="audio-player" controls>
-        <source src="bz.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-</div>
 <script>
-    // Get references to the audio element and buttons
-    const audioPlayer = document.getElementById('audio-player');
-    const playButton = document.getElementById('play-button');
-    const pauseButton = document.getElementById('pause-button');
-
-    // Add event listeners for the play and pause buttons
-    playButton.addEventListener('click', () => {
-        audioPlayer.play();
-    });
-
-    pauseButton.addEventListener('click', () => {
-        audioPlayer.pause();
-    });
     // Function to generate the calendar and update the count of green boxes
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
