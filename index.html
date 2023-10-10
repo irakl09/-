@@ -86,13 +86,27 @@
     <div id="greenCount">დარჩენილი მსახურობის დრო: <span id="count">0</span></div>
 </div>
 <div id="audio-container">
-    <audio id="audio-player">
+    <audio id="audio-player" controls>
         <source src="bz.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-    <button id="toggle-button">Play</button>
+    <button id="play-button">Play</button>
+    <button id="pause-button">Pause</button>
 </div>
 <script>
+    // Get references to the audio element and buttons
+    const audioPlayer = document.getElementById('audio-player');
+    const playButton = document.getElementById('play-button');
+    const pauseButton = document.getElementById('pause-button');
+
+    // Add event listeners for the play and pause buttons
+    playButton.addEventListener('click', () => {
+        audioPlayer.play();
+    });
+
+    pauseButton.addEventListener('click', () => {
+        audioPlayer.pause();
+    });
     // Function to generate the calendar and update the count of green boxes
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
