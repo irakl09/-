@@ -56,7 +56,7 @@
         #greenCount {
           width: 400px;
           height: 200px;
-          color: white;
+          color: rgb(4, 21, 72);
           font-family: 'Raleway';
           font-size: 2.5rem;
           --borderWidth: 3px;
@@ -69,8 +69,8 @@
           position: absolute;
           top: calc(-1 * var(--borderWidth));
           left: calc(-1 * var(--borderWidth));
-          height: calc(100% + var(--borderWidth) * 2);
-          width: calc(100% + var(--borderWidth) * 2);
+          height: calc(92% + var(--borderWidth) * 2);
+          width: calc(96% + var(--borderWidth) * 2);
           background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
           border-radius: calc(2 * var(--borderWidth));
           z-index: -1;
@@ -89,7 +89,17 @@
             background-position: 0% 50%;
           }
         }
-        
+        h1 {
+            display: inline-block; /* Make sure the border surrounds the text */
+            padding: 20px; /* Add some padding to separate text from the border */
+            background: linear-gradient(to right, #ff9900, #0737a0); /* Define a gradient as the background */
+            -webkit-background-clip: text; /* Clip the background to the text (for WebKit browsers) */
+            background-clip: text; /* Clip the background to the text (for non-WebKit browsers) */
+            color: transparent; /* Hide the text color */
+            border: 2px solid transparent; /* Add a transparent border */
+            background-origin: border-box; /* Set the background origin to the border box */
+            background-position: bottom; /* Position the background at the bottom */
+        }
     </style>
 </head>
 <body>
