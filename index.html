@@ -3,17 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ავტობუსისი განრიგი</title>
+    <title>ავტობუსის განრიგი</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            /* Background gradient */
             background: linear-gradient(to bottom, #FFFFFF, blue, pink);
         }
 
@@ -24,7 +18,10 @@
         }
 
         h1 {
-            color: #333;
+            background: linear-gradient(to right, #ff9900, #0737a0);
+            -webkit-background-clip: text;
+            color: transparent;
+            padding: 20px;
         }
 
         #calendar {
@@ -44,61 +41,14 @@
             color: white;
         }
 
-        .past-date {
-            background-color: red; /* Background color in red for past dates */
-            color: white; /* Text color for past dates */
+        .white {
+            background-color: white;
+            color: black;
         }
 
-        #greenCount {
-            margin-top: 20px;
-            font-size: 24px;
-        }
-        #greenCount {
-          width: 430px;
-          height: 360px;
-          color: rgb(4, 21, 72);
-          font-family: 'Raleway';
-          font-size: 2.5rem;
-          --borderWidth: 3px;
-          border: var(--borderWidth) solid transparent; /* Set border instead of background */
-          position: relative;
-          border-radius: var(--borderWidth);
-        }
-        #greenCount:after {
-          content: '';
-          position: absolute;
-          top: calc(-1 * var(--borderWidth));
-          left: calc(-1 * var(--borderWidth));
-          height: calc(92% + var(--borderWidth) * 2);
-          width: calc(96% + var(--borderWidth) * 2);
-          background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
-          border-radius: calc(2 * var(--borderWidth));
-          z-index: -1;
-          animation: animatedgradient 3s ease alternate infinite;
-          background-size: 300% 300%;
-        }
-        
-        @keyframes animatedgradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        h1 {
-            display: inline-block; /* Make sure the border surrounds the text */
-            padding: 20px; /* Add some padding to separate text from the border */
-            background: linear-gradient(to right, #ff9900, #0737a0); /* Define a gradient as the background */
-            -webkit-background-clip: text; /* Clip the background to the text (for WebKit browsers) */
-            background-clip: text; /* Clip the background to the text (for non-WebKit browsers) */
-            color: transparent; /* Hide the text color */
-            border: 2px solid transparent; /* Add a transparent border */
-            background-origin: border-box; /* Set the background origin to the border box */
-            background-position: bottom; /* Position the background at the bottom */
+        .past-date {
+            background-color: red;
+            color: white;
         }
     </style>
 </head>
@@ -106,61 +56,46 @@
 <div class="calendar">
     <h1>ავტობუსის განრიგი</h1>
     <div id="calendar"></div>
+</div>
 <script>
-    // Function to generate the calendar and update the count of green boxes
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
-        const countElement = document.getElementById("count");
         const startDate = new Date("2024-11-24");
         const endDate = new Date("2025-12-31");
 
-        const currentDateObj = new Date(); // Get the current date
-
+        const currentDateObj = new Date(); // მიმდინარე თარიღი
         let currentDate = startDate;
         let dayCount = 0;
 
-        setInterval(() => {
-            const dateCells = document.querySelectorAll('.date-cell');
+        while (currentDate <= endDate) {
+            const dateCell = document.createElement("div");
+            dateCell.classList.add("date-cell");
 
-            dateCells.forEach(dateCell => {
-                const cellDate = new Date(dateCell.dataset.date);
-                if (cellDate < currentDateObj) {
-                    dateCell.classList.add("past-date"); // Add a class for past dates
-                    dateCell.classList.remove("green"); // Remove the green class
-                }
+            // 3 დღე მწვანე და 3 დღე თეთრი
+            if (Math.floor(dayCount / 3) % 2 === 0) {
+                dateCell.classList.add("green");
+            } else {
+                dateCell.classList.add("white");
+            }
+
+            dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
+            dateCell.innerText = currentDate.toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "short",
             });
 
-            // Count the number of green cells
-            const greenCells = document.querySelectorAll(".green");
-            countElement.textContent = greenCells.length;
+            // წარსული თარიღები
+            if (currentDate < currentDateObj) {
+                dateCell.classList.add("past-date");
+            }
 
-        }, 1000); // Check and update every second (adjust as needed)
-
-       while (currentDate <= endDate) {
-    const dateCell = document.createElement("div");
-    dateCell.classList.add("date-cell");
-
-    // 3 დღე მწვანე და მომდევნო 3 დღე თეთრი
-    if (Math.floor(dayCount / 3) % 2 === 0) {
-        dateCell.classList.add("green");
-    } else {
-        dateCell.classList.add("white");
+            calendarContainer.appendChild(dateCell);
+            currentDate.setDate(currentDate.getDate() + 1); // დღეზე გადადება
+            dayCount++;
+        }
     }
 
-    dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
-
-    dateCell.innerText = currentDate.toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-    });
-
-    calendarContainer.appendChild(dateCell);
-    currentDate.setDate(currentDate.getDate() + 
-
-
-    // Generate the calendar and update the count initially
     generateCalendar();
-
 </script>
 </body>
 </html>
