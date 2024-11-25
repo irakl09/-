@@ -2,7 +2,7 @@
   "name": "ავტობუსის განრიგი",
   "short_name": "ავტობუსის განრიგი",
   "description": "ავტობუსის განრიგის აპლიკაცია",
-  "start_url": "/index.html", 
+  "start_url": "https://irakl09.github.io/-/", 
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#0737a0",
