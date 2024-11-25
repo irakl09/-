@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ჯარი</title>
+    <title>ავტობუსისი განრიგი</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,16 +104,15 @@
 </head>
 <body>
 <div class="calendar">
-    <h1>ჯარის განრიგი</h1>
+    <h1>ავტობუსის განრიგი</h1>
     <div id="calendar"></div>
-    <div id="greenCount">გილოვსვთ!!!დარჩენილი მსახურების დრო:0 თქვენ წარმატებით მოიხადეთ საჯარო სამსახური!!!</div> 
 <script>
     // Function to generate the calendar and update the count of green boxes
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
         const countElement = document.getElementById("count");
-        const startDate = new Date("2023-06-06");
-        const endDate = new Date("2024-06-06");
+        const startDate = new Date("2024-11-24");
+        const endDate = new Date("2025-12-31");
 
         const currentDateObj = new Date(); // Get the current date
 
@@ -137,26 +136,27 @@
 
         }, 1000); // Check and update every second (adjust as needed)
 
-        while (currentDate <= endDate) {
-            const dateCell = document.createElement("div");
-            dateCell.classList.add("date-cell");
+       while (currentDate <= endDate) {
+    const dateCell = document.createElement("div");
+    dateCell.classList.add("date-cell");
 
-            if (dayCount === 0 || dayCount % 3 === 0) {
-                dateCell.classList.add("green");
-            }
-
-            dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
-
-            dateCell.innerText = currentDate.toLocaleDateString("en-US", {
-                day: "2-digit",
-                month: "short",
-            });
-
-            calendarContainer.appendChild(dateCell);
-            currentDate.setDate(currentDate.getDate() + 1);
-            dayCount++;
-        }
+    // 3 დღე მწვანე და მომდევნო 3 დღე თეთრი
+    if (Math.floor(dayCount / 3) % 2 === 0) {
+        dateCell.classList.add("green");
+    } else {
+        dateCell.classList.add("white");
     }
+
+    dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
+
+    dateCell.innerText = currentDate.toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "short",
+    });
+
+    calendarContainer.appendChild(dateCell);
+    currentDate.setDate(currentDate.getDate() + 
+
 
     // Generate the calendar and update the count initially
     generateCalendar();
