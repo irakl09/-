@@ -2,7 +2,7 @@
   "name": "ავტობუსის განრიგი",
   "short_name": "ავტობუსის განრიგი",
   "description": "ავტობუსის განრიგის აპლიკაცია",
-  "start_url": "/index.html",  // თუ ეს ფაილია თქვენი მთავარი გვერდი
+  "start_url": "/index.html", 
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#0737a0",
