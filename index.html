@@ -48,8 +48,8 @@
             color: white;
         }
 
-        .white {
-            background-color: white;
+        .yellow {
+            background-color: yellow;
             color: black;
         }
 
@@ -79,11 +79,11 @@
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // 3 დღე მწვანე და 3 დღე თეთრი
+            // 3 დღე მწვანე და 3 დღე ყვითელი
             if (Math.floor(dayCount / 3) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
-                dateCell.classList.add("white");
+                dateCell.classList.add("yellow");
             }
 
             dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
