@@ -62,21 +62,33 @@
             background-color: yellow;
             color: black;
         }
+
+        #message {
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: blue;
+        }
     </style>
 </head>
 <body>
 <div class="calendar">
     <h1>ავტობუსის განრიგი</h1>
+    <div id="message"></div> <!-- ტექსტი კალენდრის თავში -->
     <div id="calendar"></div>
 </div>
 
 <script>
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
+        const messageContainer = document.getElementById("message");
         const startDate = new Date("2024-11-24");
         const endDate = new Date("2025-12-31");
 
         const currentDateObj = new Date(); // მიმდინარე თარიღი
+        const tomorrowDateObj = new Date(currentDateObj); // ხვალინდელი თარიღი
+        tomorrowDateObj.setDate(currentDateObj.getDate() + 1); // ხვალინდელი დღე
+
         let currentDate = startDate;
         let dayCount = 0;
 
@@ -91,11 +103,12 @@
                 dateCell.classList.add("white");
             }
 
-            dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
-            dateCell.innerText = currentDate.toLocaleDateString("en-US", {
+            const formattedDate = currentDate.toLocaleDateString("en-US", {
                 day: "2-digit",
                 month: "short",
             });
+            dateCell.dataset.date = formattedDate;
+            dateCell.innerText = formattedDate;
 
             // წარსული თარიღები
             if (currentDate < currentDateObj) {
@@ -105,6 +118,19 @@
                 } else if (dateCell.classList.contains("white")) {
                     dateCell.classList.remove("white");
                     dateCell.classList.add("past-white");
+                }
+            }
+
+            // ხვალინდელი დღის ლოგიკა
+            if (
+                currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
+                currentDate.getMonth() === tomorrowDateObj.getMonth() &&
+                currentDate.getDate() === tomorrowDateObj.getDate()
+            ) {
+                if (dateCell.classList.contains("green")) {
+                    messageContainer.innerText = "ხვალ მუშაობ";
+                } else if (dateCell.classList.contains("white")) {
+                    messageContainer.innerText = "ხვალ შენ არ მუშაობ";
                 }
             }
 
