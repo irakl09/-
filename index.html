@@ -48,14 +48,19 @@
             color: white;
         }
 
-        .yellow {
-            background-color: yellow;
+        .white {
+            background-color: white;
             color: black;
         }
 
-        .past-date {
+        .past-green {
             background-color: red;
             color: white;
+        }
+
+        .past-white {
+            background-color: yellow;
+            color: black;
         }
     </style>
 </head>
@@ -79,11 +84,11 @@
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // 3 დღე მწვანე და 3 დღე ყვითელი
+            // 3 დღე მწვანე და 3 დღე თეთრი
             if (Math.floor(dayCount / 3) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
-                dateCell.classList.add("yellow");
+                dateCell.classList.add("white");
             }
 
             dateCell.dataset.date = currentDate.toLocaleDateString("en-US");
@@ -94,7 +99,13 @@
 
             // წარსული თარიღები
             if (currentDate < currentDateObj) {
-                dateCell.classList.add("past-date");
+                if (dateCell.classList.contains("green")) {
+                    dateCell.classList.remove("green");
+                    dateCell.classList.add("past-green");
+                } else if (dateCell.classList.contains("white")) {
+                    dateCell.classList.remove("white");
+                    dateCell.classList.add("past-white");
+                }
             }
 
             calendarContainer.appendChild(dateCell);
