@@ -12,6 +12,15 @@
     <link rel="manifest" href="manifest.json">
 
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* გადაჭარბებული კონტენტი ფარავს */
+            transform: scale(0.8); /* 20% zoom-out */
+            transform-origin: 0 0; /* დასაწყისი (მარცხენა ზედა კუთხე) */
+        }
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -23,8 +32,8 @@
         h1 {
             font-size: 36px;
             color: #ff9900;
-            text-align: center;
-            margin: 20px 0;
+            text-align: right; /* მარჯვნივ გასწორება */
+            margin: 20px 20px 20px 50px; /* მარცხნივ სივრცის დამატება */
         }
 
         .calendar {
