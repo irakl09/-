@@ -39,6 +39,10 @@
             font-weight: bold;
             color: black; /* შავი ფერი */
             text-align: right; /* მარჯვნივ გასწორება */
+            border: 2px solid black; /* ჩარჩო */
+            padding: 10px; /* სივრცე ჩარჩოს შიგნით */
+            display: inline-block; /* ტექსტი ჩარჩოში */
+            border-radius: 8px; /* ოვალური კუთხეები */
         }
 
         #calendar {
@@ -133,9 +137,9 @@
                 currentDate.getDate() === tomorrowDateObj.getDate()
             ) {
                 if (dateCell.classList.contains("green")) {
-                    messageContainer.innerText = "ხვალ მუშაობ 😱";
+                    messageContainer.innerHTML = "ხვალ მუშაობ 😱"; // სმაილი
                 } else if (dateCell.classList.contains("white")) {
-                    messageContainer.innerText = "ხვალ შენ არ მუშაობ 😍🥳";
+                    messageContainer.innerHTML = "ხვალ შენ არ მუშაობ 😍🥳"; // სმაილები
                 }
             }
 
