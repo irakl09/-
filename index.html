@@ -150,6 +150,30 @@
             currentDate.setDate(currentDate.getDate() + 1); // დღეზე გადადება
             dayCount++;
         }
+
+        // წინა თვეების წაშლა 4 რიცხვში
+        setInterval(() => {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            // მხოლოდ მაშინ, როდესაც 4 რიცხვია
+            if (now.getDate() === 4) {
+                let allCells = calendarContainer.getElementsByClassName("date-cell");
+
+                // წინა თვეების წაშლა
+                for (let i = 0; i < allCells.length; i++) {
+                    const cell = allCells[i];
+                    const cellDateText = cell.innerText;
+                    const cellDay = parseInt(cellDateText.split(' ')[0]);
+                    const cellMonth = months.indexOf(cellDateText.split(' ')[1]);
+
+                    if (cellMonth < currentMonth || (cellMonth === currentMonth && cellDay < now.getDate())) {
+                        calendarContainer.removeChild(cell);
+                    }
+                }
+            }
+        }, 86400000); // 86400000 მილი-წუთში (1 დღე)
     }
 
     generateCalendar();
