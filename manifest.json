@@ -4,7 +4,7 @@
   "description": "ავტობუსის განრიგის აპლიკაცია",
   "start_url": "https://irakl09.github.io/-/", 
   "display": "standalone",
-  "background_color": "#FFFFFF",
+  "background_color": "#FFFFFF",  // აქ უკვე არ ცვლით ფერს
   "theme_color": "#0737a0",
   "icons": [
     {
