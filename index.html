@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ავტობუსის განრიგი</title>
     
-    <!-- Favicon linking -->
     <link rel="icon" href="j.png" type="image/png">
-    
-    <!-- Web App Manifest linking -->
     <link rel="manifest" href="manifest.json">
 
     <style>
@@ -28,7 +25,7 @@
         }
 
         .calendar {
-            max-width: 800px;
+            max-width: 100%; /* კალენდარი იკავებს სრულ სიგანეს */
             margin: 0 auto;
             padding: 20px;
         }
@@ -42,14 +39,16 @@
 
         #calendar {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, 1fr); /* 7 სვეტი */
             gap: 5px;
+            width: 100%; /* კალენდარი იკავებს სრულ ეკრანს */
         }
 
         .date-cell {
             border: 1px solid #ccc;
             padding: 10px;
             text-align: center;
+            font-size: 14px; /* ტექსტის ზომა */
         }
 
         .green {
@@ -85,11 +84,6 @@
         const calendarContainer = document.getElementById("calendar");
         const messageContainer = document.getElementById("message");
         const startDate = new Date("2024-11-24");
-        const endDate = new Date("2025-12-31");
-
-        const currentDateObj = new Date(); // მიმდინარე თარიღი
-        const tomorrowDateObj = new Date(currentDateObj); // ხვალინდელი თარიღი
-        tomorrowDateObj.setDate(currentDateObj.getDate() + 1); // ხვალინდელი დღე
 
         const months = ["იან", "თებ", "მარტ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
         const weekdays = ["კვი", "ორ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
@@ -97,11 +91,11 @@
         let currentDate = startDate;
         let dayCount = 0;
 
-        while (currentDate <= endDate) {
+        // ვაჩვენებთ მხოლოდ 7 კუბიკს
+        for (let i = 0; i < 7; i++) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // 3 დღე მწვანე და 3 დღე თეთრი
             if (Math.floor(dayCount / 3) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
@@ -113,30 +107,6 @@
             const weekday = weekdays[currentDate.getDay()];
 
             dateCell.innerText = `${day} ${month} (${weekday})`;
-
-            // წარსული თარიღები
-            if (currentDate < currentDateObj) {
-                if (dateCell.classList.contains("green")) {
-                    dateCell.classList.remove("green");
-                    dateCell.classList.add("past-green");
-                } else if (dateCell.classList.contains("white")) {
-                    dateCell.classList.remove("white");
-                    dateCell.classList.add("past-white");
-                }
-            }
-
-            // ხვალინდელი დღის ლოგიკა
-            if (
-                currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
-                currentDate.getMonth() === tomorrowDateObj.getMonth() &&
-                currentDate.getDate() === tomorrowDateObj.getDate()
-            ) {
-                if (dateCell.classList.contains("green")) {
-                    messageContainer.innerText = "ხვალ მუშაობ";
-                } else if (dateCell.classList.contains("white")) {
-                    messageContainer.innerText = "ხვალ შენ არ მუშაობ";
-                }
-            }
 
             calendarContainer.appendChild(dateCell);
             currentDate.setDate(currentDate.getDate() + 1); // დღეზე გადადება
