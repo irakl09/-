@@ -89,6 +89,9 @@
         const tomorrowDateObj = new Date(currentDateObj); // ხვალინდელი თარიღი
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1); // ხვალინდელი დღე
 
+        const months = ["იან", "თებ", "მარტ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
+        const weekdays = ["კვი", "ორ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
+
         let currentDate = startDate;
         let dayCount = 0;
 
@@ -103,17 +106,11 @@
                 dateCell.classList.add("white");
             }
 
-            const formattedDate = currentDate.toLocaleDateString("en-US", {
-                day: "2-digit",
-                month: "short",
-            });
-
-            // კვირის დღე ქართულად
-            const weekdays = ["კვი", "ორ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
+            const day = currentDate.getDate();
+            const month = months[currentDate.getMonth()];
             const weekday = weekdays[currentDate.getDay()];
 
-            dateCell.dataset.date = formattedDate;
-            dateCell.innerText = `${formattedDate} ${weekday}`;
+            dateCell.innerText = `${day} ${month} (${weekday})`;
 
             // წარსული თარიღები
             if (currentDate < currentDateObj) {
