@@ -21,10 +21,10 @@
         }
 
         h1 {
-            font-size: 12px; /* 12px ზომის ტექსტი */
-            color: #00008b; /* მუქი ლურჯი ფერი */
-            text-align: right; /* მარჯვნივ გასწორება */
-            margin: 20px 20px 20px 50px; /* მარცხნივ სივრცის დამატება */
+            font-size: 12px; 
+            color: #00008b; 
+            text-align: right; 
+            margin: 20px 20px 20px 50px; 
         }
 
         .calendar {
@@ -38,14 +38,14 @@
             top: 20px;
             left: 20px;
             margin: 0;
-            font-size: 18px; /* 18px ზომის ტექსტი */
+            font-size: 18px; 
             font-weight: bold;
-            color: black; /* შავი ფერი */
-            text-align: left; /* მარცხნივ გასწორება */
-            border: 2px solid black; /* ჩარჩო */
-            padding: 10px; /* სივრცე ჩარჩოს შიგნით */
-            display: inline-block; /* ტექსტი ჩარჩოში */
-            border-radius: 8px; /* ოვალური კუთხეები */
+            color: black; 
+            text-align: left;
+            border: 2px solid black; 
+            padding: 10px; 
+            display: inline-block;
+            border-radius: 8px; 
         }
 
         #calendar {
@@ -84,20 +84,30 @@
 <body>
     <h1>ავტობუსის განრიგი</h1>
     <div class="calendar">
-        <div id="message"></div> <!-- ტექსტი კალენდრის თავში -->
+        <div id="message"></div> 
         <div id="calendar"></div>
     </div>
 
 <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(function(registration) {
+                console.log('Service Worker დარეგისტრირდა:', registration);
+            })
+            .catch(function(error) {
+                console.log('Service Worker ვერ დარეგისტრირდა:', error);
+            });
+    }
+
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
         const messageContainer = document.getElementById("message");
         const startDate = new Date("2024-11-24");
         const endDate = new Date("2025-12-31");
 
-        const currentDateObj = new Date(); // მიმდინარე თარიღი
-        const tomorrowDateObj = new Date(currentDateObj); // ხვალინდელი თარიღი
-        tomorrowDateObj.setDate(currentDateObj.getDate() + 1); // ხვალინდელი დღე
+        const currentDateObj = new Date(); 
+        const tomorrowDateObj = new Date(currentDateObj); 
+        tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
 
         const months = ["იან", "თებ", "მარტ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
         const weekdays = ["კვი", "ორ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
@@ -109,7 +119,6 @@
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // 3 დღე მწვანე და 3 დღე თეთრი
             if (Math.floor(dayCount / 3) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
@@ -122,7 +131,6 @@
 
             dateCell.innerText = `${day} ${month} (${weekday})`;
 
-            // წარსული თარიღები
             if (currentDate < currentDateObj) {
                 if (dateCell.classList.contains("green")) {
                     dateCell.classList.remove("green");
@@ -133,47 +141,22 @@
                 }
             }
 
-            // ხვალინდელი დღის ლოგიკა
             if (
                 currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
                 currentDate.getMonth() === tomorrowDateObj.getMonth() &&
                 currentDate.getDate() === tomorrowDateObj.getDate()
             ) {
                 if (dateCell.classList.contains("green")) {
-                    messageContainer.innerHTML = "ხვალ მუშაობ 😱"; // სმაილი
+                    messageContainer.innerHTML = "ხვალ მუშაობ 😱"; 
                 } else if (dateCell.classList.contains("white")) {
-                    messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; // სმაილები
+                    messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; 
                 }
             }
 
             calendarContainer.appendChild(dateCell);
-            currentDate.setDate(currentDate.getDate() + 1); // დღეზე გადადება
+            currentDate.setDate(currentDate.getDate() + 1); 
             dayCount++;
         }
-
-        // წინა თვეების წაშლა 4 რიცხვში
-        setInterval(() => {
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-
-            // მხოლოდ მაშინ, როდესაც 4 რიცხვია
-            if (now.getDate() === 4) {
-                let allCells = calendarContainer.getElementsByClassName("date-cell");
-
-                // წინა თვეების წაშლა
-                for (let i = 0; i < allCells.length; i++) {
-                    const cell = allCells[i];
-                    const cellDateText = cell.innerText;
-                    const cellDay = parseInt(cellDateText.split(' ')[0]);
-                    const cellMonth = months.indexOf(cellDateText.split(' ')[1]);
-
-                    if (cellMonth < currentMonth || (cellMonth === currentMonth && cellDay < now.getDate())) {
-                        calendarContainer.removeChild(cell);
-                    }
-                }
-            }
-        }, 86400000); // 86400000 მილი-წუთში (1 დღე)
     }
 
     generateCalendar();
