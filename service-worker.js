@@ -4,11 +4,10 @@ const urlsToCache = [
     '/index.html',
     '/style.css',
     '/script.js',
-    '/j.png', // თქვენი ყველა სურათი
+    '/j.png', 
     '/jj.jpg'
 ];
 
-// აქტივობების დაწყება
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -19,7 +18,6 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// fetch-თი მომხმარებლის მოთხოვნის დამუშავება
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
@@ -29,7 +27,6 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// cache-ების განახლება
 self.addEventListener('activate', (event) => {
     const cacheWhitelist = [CACHE_NAME];
     event.waitUntil(
