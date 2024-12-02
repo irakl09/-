@@ -2,7 +2,7 @@
   "name": "ავტობუსის განრიგი",
   "short_name": "ავტობუსის განრიგი",
   "description": "ავტობუსის განრიგის აპლიკაცია",
-  "start_url": "https://irakl09.github.io/-/", 
+  "start_url": "https://irakl09.github.io/-/",  // თქვენი GitHub Pages URL
   "display": "standalone",
   "background_color": "#FFFFFF",  
   "theme_color": "#0737a0",
