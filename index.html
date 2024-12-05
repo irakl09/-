@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ავტობუსის განრიგი</title>
     
+    <!-- Favicon linking -->
+    <link rel="icon" href="j.png" type="image/png">
+    
+    <!-- Web App Manifest linking -->
+    <link rel="manifest" href="manifest.json">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,6 +31,21 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        #message {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            margin: 0;
+            font-size: 18px; 
+            font-weight: bold;
+            color: black; 
+            text-align: left;
+            border: 2px solid black; 
+            padding: 10px; 
+            display: inline-block;
+            border-radius: 8px; 
         }
 
         #calendar {
@@ -48,31 +69,56 @@
             background-color: white;
             color: black;
         }
+
+        .past-green {
+            background-color: red;
+            color: white;
+        }
+
+        .past-white {
+            background-color: yellow;
+            color: black;
+        }
     </style>
 </head>
 <body>
     <h1>ავტობუსის განრიგი</h1>
     <div class="calendar">
+        <div id="message"></div> 
         <div id="calendar"></div>
     </div>
 
 <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(function(registration) {
+                console.log('Service Worker დარეგისტრირდა:', registration);
+            })
+            .catch(function(error) {
+                console.log('Service Worker ვერ დარეგისტრირდა:', error);
+            });
+    }
+
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
+        const messageContainer = document.getElementById("message");
         const startDate = new Date("2024-11-24");
-        let currentDate = startDate;
-        let dayCount = 0;
+        const endDate = new Date("2025-12-31");
+
+        const currentDateObj = new Date(); 
+        const tomorrowDateObj = new Date(currentDateObj); 
+        tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
+
         const months = ["იან", "თებ", "მარტ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
         const weekdays = ["კვი", "ორ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
 
-        let calendarCells = [];
-        let newMonthStarted = false;
+        let currentDate = startDate;
+        let dayCount = 0;
 
-        while (currentDate.getMonth() <= 11) { // გაჩერდება დეკემბრის ბოლომდე
+        while (currentDate <= endDate) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // 3-დღიანი ციკლი
             if (Math.floor(dayCount / 3) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
@@ -85,20 +131,30 @@
 
             dateCell.innerText = `${day} ${month} (${weekday})`;
 
-            calendarCells.push(dateCell);
-            calendarContainer.appendChild(dateCell);
-
-            if (currentDate.getDate() === 1 && !newMonthStarted) {
-                // ახალი თვის დაწყება: გადამოწმება 2, 3 და 4 დეკემბრის ფერის
-                const colorCheck = new Set(calendarCells.slice(-3).map(cell => cell.className));
-                if (colorCheck.size === 1) { // თუ 3 დღე ერთ ფერშია
-                    // წინა თვე წაშლა
-                    calendarCells = [];
-                    newMonthStarted = true; // ახალი თვის დაწყება ნიშანდება
+            if (currentDate < currentDateObj) {
+                if (dateCell.classList.contains("green")) {
+                    dateCell.classList.remove("green");
+                    dateCell.classList.add("past-green");
+                } else if (dateCell.classList.contains("white")) {
+                    dateCell.classList.remove("white");
+                    dateCell.classList.add("past-white");
                 }
             }
 
-            currentDate.setDate(currentDate.getDate() + 1);
+            if (
+                currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
+                currentDate.getMonth() === tomorrowDateObj.getMonth() &&
+                currentDate.getDate() === tomorrowDateObj.getDate()
+            ) {
+                if (dateCell.classList.contains("green")) {
+                    messageContainer.innerHTML = "ხვალ მუშაობ 😱"; 
+                } else if (dateCell.classList.contains("white")) {
+                    messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; 
+                }
+            }
+
+            calendarContainer.appendChild(dateCell);
+            currentDate.setDate(currentDate.getDate() + 1); 
             dayCount++;
         }
     }
