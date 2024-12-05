@@ -114,13 +114,11 @@
 
         let currentDate = startDate;
         let dayCount = 0;
-        let lastMonth = startDate.getMonth(); // ვაკვირდებით ბოლო თვეს
 
         while (currentDate <= endDate) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // 3 დღიანი ციკლი 24 ნოემბრიდან
             if (Math.floor(dayCount / 3) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
@@ -133,7 +131,6 @@
 
             dateCell.innerText = `${day} ${month} (${weekday})`;
 
-            // წარსულის თარიღების კლასები
             if (currentDate < currentDateObj) {
                 if (dateCell.classList.contains("green")) {
                     dateCell.classList.remove("green");
@@ -144,7 +141,6 @@
                 }
             }
 
-            // ხვალინდელი შეტყობინება
             if (
                 currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
                 currentDate.getMonth() === tomorrowDateObj.getMonth() &&
@@ -155,18 +151,6 @@
                 } else if (dateCell.classList.contains("white")) {
                     messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; 
                 }
-            }
-
-            // 4 რიცხვში წინა თვის წაშლა
-            if (currentDate.getDate() === 4 && currentDate.getMonth() !== lastMonth) {
-                const cells = calendarContainer.querySelectorAll(".date-cell");
-                cells.forEach(cell => {
-                    const cellDate = new Date(cell.innerText.split(" ")[0] + " " + months.indexOf(cell.innerText.split(" ")[1]) + " " + currentDate.getFullYear());
-                    if (cellDate.getMonth() < currentDate.getMonth()) {
-                        cell.remove();
-                    }
-                });
-                lastMonth = currentDate.getMonth();
             }
 
             calendarContainer.appendChild(dateCell);
