@@ -105,6 +105,7 @@
         const startDate = new Date("2024-11-24");
         const endDate = new Date("2025-12-31");
 
+        const displayStartDate = new Date("2024-12-01");
         const currentDateObj = new Date(); 
         const tomorrowDateObj = new Date(currentDateObj); 
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
@@ -116,44 +117,55 @@
         let dayCount = 0;
 
         while (currentDate <= endDate) {
-            const dateCell = document.createElement("div");
-            dateCell.classList.add("date-cell");
+            if (currentDate >= displayStartDate) {
+                const dateCell = document.createElement("div");
+                dateCell.classList.add("date-cell");
 
-            if (Math.floor(dayCount / 3) % 2 === 0) {
-                dateCell.classList.add("green");
-            } else {
-                dateCell.classList.add("white");
-            }
-
-            const day = currentDate.getDate();
-            const month = months[currentDate.getMonth()];
-            const weekday = weekdays[currentDate.getDay()];
-
-            dateCell.innerText = `${day} ${month} (${weekday})`;
-
-            if (currentDate < currentDateObj) {
-                if (dateCell.classList.contains("green")) {
-                    dateCell.classList.remove("green");
-                    dateCell.classList.add("past-green");
-                } else if (dateCell.classList.contains("white")) {
-                    dateCell.classList.remove("white");
-                    dateCell.classList.add("past-white");
+                // 3 დღიანი ციკლი 24 ნოემბრიდან
+                if (Math.floor(dayCount / 3) % 2 === 0) {
+                    dateCell.classList.add("green");
+                } else {
+                    dateCell.classList.add("white");
                 }
-            }
 
-            if (
-                currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
-                currentDate.getMonth() === tomorrowDateObj.getMonth() &&
-                currentDate.getDate() === tomorrowDateObj.getDate()
-            ) {
-                if (dateCell.classList.contains("green")) {
-                    messageContainer.innerHTML = "ხვალ მუშაობ 😱"; 
-                } else if (dateCell.classList.contains("white")) {
-                    messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; 
+                const day = currentDate.getDate();
+                const month = months[currentDate.getMonth()];
+                const weekday = weekdays[currentDate.getDay()];
+
+                dateCell.innerText = `${day} ${month} (${weekday})`;
+
+                // წარსულის თარიღების კლასები
+                if (currentDate < currentDateObj) {
+                    if (dateCell.classList.contains("green")) {
+                        dateCell.classList.remove("green");
+                        dateCell.classList.add("past-green");
+                    } else if (dateCell.classList.contains("white")) {
+                        dateCell.classList.remove("white");
+                        dateCell.classList.add("past-white");
+                    }
                 }
+
+                // ხვალინდელი შეტყობინება
+                if (
+                    currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
+                    currentDate.getMonth() === tomorrowDateObj.getMonth() &&
+                    currentDate.getDate() === tomorrowDateObj.getDate()
+                ) {
+                    if (dateCell.classList.contains("green")) {
+                        messageContainer.innerHTML = "ხვალ მუშაობ 😱"; 
+                    } else if (dateCell.classList.contains("white")) {
+                        messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; 
+                    }
+                }
+
+                calendarContainer.appendChild(dateCell);
             }
 
-            calendarContainer.appendChild(dateCell);
+            // წინა თვის წაშლა ყოველ 4 რიცხვში
+            if (currentDate.getDate() === 4) {
+                calendarContainer.innerHTML = "";
+            }
+
             currentDate.setDate(currentDate.getDate() + 1); 
             dayCount++;
         }
