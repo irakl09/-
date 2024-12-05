@@ -115,6 +115,11 @@
         let currentDate = startDate;
         let dayCount = 0;
 
+        // დასაწყისი თვის პირველი დღიდან
+        while (currentDate.getDate() !== 1) {
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
         while (currentDate <= endDate) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
