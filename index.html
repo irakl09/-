@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ავტობუსის განრიგი</title>
+    <title>volvo განრიგი</title>
     
     <!-- Favicon linking -->
     <link rel="icon" href="j.png" type="image/png">
@@ -93,6 +93,23 @@
         navigator.serviceWorker.register('/service-worker.js')
             .then(function(registration) {
                 console.log('Service Worker დარეგისტრირდა:', registration);
+
+                // ✅ აქ ხდება ავტომატური განახლებების შემოწმება
+                if (registration.waiting) {
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+
+                registration.onupdatefound = () => {
+                    const newWorker = registration.installing;
+                    newWorker.onstatechange = () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // ეს შეგატყობინებს მომხმარებელს, რომ განახლება მზადაა
+                            console.log('ახალი ვერსია ხელმისაწვდომია. გვერდი გადაიტვირთება...');
+                            window.location.reload();
+                        }
+                    };
+                };
+
             })
             .catch(function(error) {
                 console.log('Service Worker ვერ დარეგისტრირდა:', error);
@@ -102,7 +119,7 @@
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
         const messageContainer = document.getElementById("message");
-        const startDate = new Date("2024-11-24");
+        const startDate = new Date("2025-08-03");
         const endDate = new Date("2025-12-31");
 
         const currentDateObj = new Date(); 
@@ -119,7 +136,7 @@
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            if (Math.floor(dayCount / 3) % 2 === 0) {
+            if (Math.floor(dayCount / 2) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
                 dateCell.classList.add("white");
