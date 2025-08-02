@@ -34,14 +34,14 @@
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f3f4f6, #bfdbfe);
             min-height: 100vh;
-            padding: 15px;
+            padding: 10px;
             color: var(--text-color);
         }
 
         .container {
             max-width: 100%;
             margin: 0 auto;
-            padding: 15px;
+            padding: 10px;
         }
 
         h1 {
@@ -54,12 +54,12 @@
         .message-container {
             background: white;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
             margin-bottom: 15px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             font-weight: 500;
-            font-size: 1rem;
             text-align: center;
+            font-size: 1rem;
         }
 
         .navigation {
@@ -75,14 +75,14 @@
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1rem;
-            flex: 1;
-            min-width: 120px;
-            text-align: center;
+            font-size: 0.9rem;
             transition: background-color 0.3s;
+            flex: 1;
+            max-width: 120px;
+            text-align: center;
         }
 
         .nav-button:active {
@@ -92,24 +92,20 @@
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            gap: 5px;
             background: white;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .date-cell {
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.85rem;
             line-height: 1.4;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            transition: transform 0.2s;
         }
 
         .date-cell:active {
@@ -139,87 +135,52 @@
         .weekday-header {
             font-weight: bold;
             text-align: center;
-            padding: 10px;
+            padding: 8px;
             color: var(--primary-color);
-            font-size: 1rem;
+            font-size: 0.85rem;
         }
 
-        /* Mobile-specific styles */
+        /* Mobile Styles */
         @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
             h1 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            .message-container {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-
-            .navigation {
-                flex-direction: row;
-                gap: 8px;
-            }
-
-            .nav-button {
-                padding: 10px;
-                font-size: 0.9rem;
-                min-width: 45%;
+                font-size: 1.4rem;
             }
 
             .calendar {
-                grid-template-columns: repeat(7, 1fr);
-                gap: 5px;
-                padding: 10px;
-            }
-
-            .weekday-header {
-                font-size: 0.9rem;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
                 padding: 8px;
             }
 
             .date-cell {
                 padding: 8px;
+                font-size: 0.8rem;
+            }
+
+            .weekday-header {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
+
+            .message-container {
                 font-size: 0.9rem;
-                min-height: 45px;
+                padding: 8px;
+            }
+
+            .nav-button {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                max-width: 100px;
             }
         }
 
-        /* Extra small screens */
-        @media (max-width: 360px) {
-            h1 {
-                font-size: 1.3rem;
-            }
-
-            .message-container {
-                font-size: 0.85rem;
-            }
-
-            .nav-button {
-                font-size: 0.85rem;
-                padding: 8px;
-            }
-
+        @media (max-width: 400px) {
             .calendar {
-                gap: 4px;
+                grid-template-columns: 1fr;
             }
 
             .weekday-header {
-                font-size: 0.8rem;
-            }
-
-            .date-cell {
-                font-size: 0.8rem;
-                padding: 6px;
-                min-height: 40px;
+                display: none;
             }
         }
     </style>
@@ -242,11 +203,9 @@
         navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
                 console.log('Service Worker registered:', registration);
-
                 if (registration.waiting) {
                     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
                 }
-
                 registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', () => {
@@ -267,6 +226,8 @@
     const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
+    const startDate = new Date("2025-08-02"); // Starting point for the schedule
+    const endDate = new Date("2025-12-31"); // End date for the schedule
 
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
@@ -275,16 +236,18 @@
         calendarContainer.innerHTML = '';
 
         // Add weekday headers
-        weekdays.forEach(day => {
-            const header = document.createElement("div");
-            header.classList.add("weekday-header");
-            header.innerText = day;
-            calendarContainer.appendChild(header);
-        });
+        if (window.innerWidth > 400) {
+            weekdays.forEach(day => {
+                const header = document.createElement("div");
+                header.classList.add("weekday-header");
+                header.innerText = day;
+                calendarContainer.appendChild(header);
+            });
+        }
 
-        // Calculate dates
-        const startDate = new Date(currentYear, currentMonth, 1);
-        const endDate = new Date(currentYear, currentMonth + 1, 0);
+        // Calculate dates for the current month
+        const monthStart = new Date(currentYear, currentMonth, 1);
+        const monthEnd = new Date(currentYear, currentMonth + 1, 0);
         const currentDateObj = new Date();
         const tomorrowDateObj = new Date(currentDateObj);
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
@@ -293,42 +256,35 @@
         currentMonthDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
 
         // Add empty cells for days before the 1st
-        const firstDay = startDate.getDay();
+        const firstDay = monthStart.getDay();
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement("div");
             calendarContainer.appendChild(emptyCell);
         }
 
-        let dayCount = 0;
-        let currentDate = new Date(startDate);
-
-        while (currentDate <= endDate) {
+        // Calculate days since startDate for work/rest cycle
+        let currentDate = new Date(monthStart);
+        while (currentDate <= monthEnd) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
-            const day = currentDate.getDate();
 
-            // Custom color logic for days 1, 2, 3, 4
-            if (day === 1) {
-                dateCell.classList.add("past-green"); // Day 1 is red (past work day)
-            } else if (day === 2 && 
-                currentDate.getFullYear() === currentDateObj.getFullYear() &&
-                currentDate.getMonth() === currentDateObj.getMonth() &&
-                currentDate.getDate() === currentDateObj.getDate()) {
-                dateCell.classList.add("white"); // Day 2 is white if today
-            } else if (day === 2 && currentDate < currentDateObj) {
-                dateCell.classList.add("past-green"); // Day 2 is red if past
-            } else if (day === 3 || day === 4) {
-                dateCell.classList.add("green"); // Days 3 and 4 are green
+            // Calculate days since startDate
+            const timeDiff = currentDate - startDate;
+            const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const cycleDay = daysSinceStart % 4; // 4-day cycle (2 work, 2 rest)
+
+            // Apply work/rest day styles
+            if (cycleDay < 2) {
+                dateCell.classList.add("green"); // Work days
             } else {
-                // Original 2-day work/rest pattern for other days
-                if (Math.floor(dayCount / 2) % 2 === 0) {
-                    dateCell.classList.add("green");
-                } else {
-                    dateCell.classList.add("white");
-                }
+                dateCell.classList.add("white"); // Rest days
             }
 
-            // Apply past day styling
+            const day = currentDate.getDate();
+            const weekday = weekdays[currentDate.getDay()];
+            dateCell.innerText = `${day}\n${weekday}`;
+
+            // Past days
             if (currentDate < currentDateObj) {
                 if (dateCell.classList.contains("green")) {
                     dateCell.classList.remove("green");
@@ -338,10 +294,6 @@
                     dateCell.classList.add("past-white");
                 }
             }
-
-            // Display day and weekday
-            const weekday = weekdays[currentDate.getDay()];
-            dateCell.innerText = `${day}\n${weekday}`;
 
             // Tomorrow message
             if (
@@ -356,7 +308,6 @@
 
             calendarContainer.appendChild(dateCell);
             currentDate.setDate(currentDate.getDate() + 1);
-            dayCount++;
         }
     }
 
@@ -380,6 +331,9 @@
 
     // Initial calendar generation
     generateCalendar();
+
+    // Update calendar on window resize
+    window.addEventListener('resize', generateCalendar);
 </script>
 </body>
 </html>
