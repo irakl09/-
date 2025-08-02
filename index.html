@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ka">
 <head>
@@ -6,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volvo განრიგი</title>
     
-    <!-- Favicon linking (supporting both PNG and JPG) -->
-    <link rel="icon" href="1.jpg" type="image/jpeg">
+    <!-- Favicon linking -->
     <link rel="icon" href="1.png" type="image/png">
     
     <!-- Web App Manifest linking -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- Apple Touch Icon for iOS (supporting both PNG and JPG) -->
-    <link rel="apple-touch-icon" href="1.jpg">
-    <link rel="apple-touch-icon" href="1.png">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -40,82 +34,76 @@
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f3f4f6, #bfdbfe);
             min-height: 100vh;
-            padding: 10px;
+            padding: 20px;
             color: var(--text-color);
         }
 
         .container {
-            max-width: 100%;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 20px;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--primary-color);
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .message-container {
             background: white;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             font-weight: 500;
-            text-align: center;
-            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .nav-button {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.9rem;
             transition: background-color 0.3s;
-            flex: 1;
-            max-width: 120px;
-            text-align: center;
         }
 
-        .nav-button:active {
+        .nav-button:hover {
             background: #1e40af;
         }
 
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 8px;
             background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .date-cell {
-            padding: 10px;
+            padding: 15px;
             text-align: center;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            line-height: 1.4;
+            border-radius: 8px;
             transition: transform 0.2s;
+            font-size: 0.9rem;
         }
 
-        .date-cell:active {
-            transform: scale(0.95);
+        .date-cell:hover {
+            transform: scale(1.05);
         }
 
         .green {
@@ -141,21 +129,14 @@
         .weekday-header {
             font-weight: bold;
             text-align: center;
-            padding: 8px;
+            padding: 10px;
             color: var(--primary-color);
-            font-size: 0.85rem;
         }
 
-        /* Mobile Styles */
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.4rem;
-            }
-
             .calendar {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(7, 1fr);
                 gap: 4px;
-                padding: 8px;
             }
 
             .date-cell {
@@ -163,30 +144,8 @@
                 font-size: 0.8rem;
             }
 
-            .weekday-header {
-                font-size: 0.75rem;
-                padding: 6px;
-            }
-
-            .message-container {
-                font-size: 0.9rem;
-                padding: 8px;
-            }
-
-            .nav-button {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-                max-width: 100px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .calendar {
-                grid-template-columns: 1fr;
-            }
-
-            .weekday-header {
-                display: none;
+            h1 {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -206,12 +165,14 @@
 <script>
     // Service Worker Registration
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js')
+        navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
                 console.log('Service Worker registered:', registration);
+
                 if (registration.waiting) {
                     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
                 }
+
                 registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', () => {
@@ -232,7 +193,6 @@
     const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
-    const startDate = new Date("2025-08-01"); // Start from 1 August
 
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
@@ -241,21 +201,17 @@
         calendarContainer.innerHTML = '';
 
         // Add weekday headers
-        if (window.innerWidth > 400) {
-            weekdays.forEach(day => {
-                const header = document.createElement("div");
-                header.classList.add("weekday-header");
-                header.innerText = day;
-                calendarContainer.appendChild(header);
-            });
-        }
+        weekdays.forEach(day => {
+            const header = document.createElement("div");
+            header.classList.add("weekday-header");
+            header.innerText = day;
+            calendarContainer.appendChild(header);
+        });
 
-        // Calculate dates for the current month
-        const monthStart = new Date(currentYear, currentMonth, 1);
-        const monthEnd = new Date(currentYear, currentMonth + 1, 0);
+        // Calculate dates
+        const startDate = new Date(currentYear, currentMonth, 1);
+        const endDate = new Date(currentYear, currentMonth + 1, 0);
         const currentDateObj = new Date();
-        const yesterdayDateObj = new Date(currentDateObj);
-        yesterdayDateObj.setDate(currentDateObj.getDate() - 1);
         const tomorrowDateObj = new Date(currentDateObj);
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
 
@@ -263,44 +219,54 @@
         currentMonthDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
 
         // Add empty cells for days before the 1st
-        const firstDay = monthStart.getDay();
+        const firstDay = startDate.getDay();
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement("div");
             calendarContainer.appendChild(emptyCell);
         }
 
-        // Calculate days since startDate for work/rest cycle
-        let currentDate = new Date(monthStart);
-        while (currentDate <= monthEnd) {
+        let currentDate = new Date(startDate);
+
+        while (currentDate <= endDate) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
+            const day = currentDate.getDate();
 
-            // Calculate days since startDate
-            const timeDiff = currentDate - startDate;
-            const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const cycleDay = daysSinceStart % 4; // 4-day cycle (2 rest, 2 work)
-
-            // Apply work/rest day styles
-            if (cycleDay < 2) {
-                dateCell.classList.add("white"); // Rest days (e.g., 1-2 Aug)
+            // Custom logic for day colors
+            if (day === 1) {
+                // Day 1 is always red (past work day)
+                dateCell.classList.add("past-green");
+            } else if (day === 2 && 
+                currentDate.getFullYear() === currentDateObj.getFullYear() &&
+                currentDate.getMonth() === currentDateObj.getMonth() &&
+                currentDate.getDate() === currentDateObj.getDate()) {
+                // Day 2 is white if it's today
+                dateCell.classList.add("white");
+            } else if (day === 2 && currentDate < currentDateObj) {
+                // Day 2 is red if it's in the past
+                dateCell.classList.add("past-green");
+            } else if (day === 3 || day === 4) {
+                // Days 3 and 4 are green
+                dateCell.classList.add("green");
             } else {
-                dateCell.classList.add("green"); // Work days (e.g., 3-4 Aug)
+                // Other days are white by default
+                dateCell.classList.add("white");
             }
 
-            const day = currentDate.getDate();
-            const weekday = weekdays[currentDate.getDay()];
-            dateCell.innerText = `${day}\n${weekday}`;
-
-            // Past days (yesterday and before)
-            if (currentDate < yesterdayDateObj) {
-                if (dateCell.classList.contains("white")) {
-                    dateCell.classList.remove("white");
-                    dateCell.classList.add("past-green"); // 1 Aug turns red
-                } else if (dateCell.classList.contains("green")) {
+            // Apply past day styling
+            if (currentDate < currentDateObj) {
+                if (dateCell.classList.contains("green")) {
                     dateCell.classList.remove("green");
-                    dateCell.classList.add("past-green"); // Past work days turn red
+                    dateCell.classList.add("past-green");
+                } else if (dateCell.classList.contains("white")) {
+                    dateCell.classList.remove("white");
+                    dateCell.classList.add("past-white");
                 }
             }
+
+            // Display day and weekday
+            const weekday = weekdays[currentDate.getDay()];
+            dateCell.innerText = `${day}\n${weekday}`;
 
             // Tomorrow message
             if (
@@ -338,9 +304,6 @@
 
     // Initial calendar generation
     generateCalendar();
-
-    // Update calendar on window resize
-    window.addEventListener('resize', generateCalendar);
 </script>
 </body>
 </html>
