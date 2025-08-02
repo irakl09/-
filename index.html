@@ -34,76 +34,82 @@
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f3f4f6, #bfdbfe);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             color: var(--text-color);
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--primary-color);
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .message-container {
             background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            text-align: center;
+            font-size: 1rem;
         }
 
         .navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .nav-button {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 0.9rem;
             transition: background-color 0.3s;
+            flex: 1;
+            max-width: 120px;
+            text-align: center;
         }
 
-        .nav-button:hover {
+        .nav-button:active {
             background: #1e40af;
         }
 
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 5px;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .date-cell {
-            padding: 15px;
+            padding: 10px;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            line-height: 1.4;
             transition: transform 0.2s;
-            font-size: 0.9rem;
         }
 
-        .date-cell:hover {
-            transform: scale(1.05);
+        .date-cell:active {
+            transform: scale(0.95);
         }
 
         .green {
@@ -129,14 +135,21 @@
         .weekday-header {
             font-weight: bold;
             text-align: center;
-            padding: 10px;
+            padding: 8px;
             color: var(--primary-color);
+            font-size: 0.85rem;
         }
 
+        /* Mobile Styles */
         @media (max-width: 600px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+
             .calendar {
-                grid-template-columns: repeat(7, 1fr);
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile */
                 gap: 4px;
+                padding: 8px;
             }
 
             .date-cell {
@@ -144,8 +157,30 @@
                 font-size: 0.8rem;
             }
 
-            h1 {
-                font-size: 1.5rem;
+            .weekday-header {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
+
+            .message-container {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .nav-button {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                max-width: 100px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .calendar {
+                grid-template-columns: 1fr; /* 1 column for very small screens */
+            }
+
+            .weekday-header {
+                display: none; /* Hide weekday headers on very small screens */
             }
         }
     </style>
@@ -168,11 +203,9 @@
         navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
                 console.log('Service Worker registered:', registration);
-
                 if (registration.waiting) {
                     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
                 }
-
                 registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', () => {
@@ -201,12 +234,14 @@
         calendarContainer.innerHTML = '';
 
         // Add weekday headers
-        weekdays.forEach(day => {
-            const header = document.createElement("div");
-            header.classList.add("weekday-header");
-            header.innerText = day;
-            calendarContainer.appendChild(header);
-        });
+        if (window.innerWidth > 400) { // Show headers only for larger screens
+            weekdays.forEach(day => {
+                const header = document.createElement("div");
+                header.classList.add("weekday-header");
+                header.innerText = day;
+                calendarContainer.appendChild(header);
+            });
+        }
 
         // Calculate dates
         const startDate = new Date(currentYear, currentMonth, 1);
@@ -291,6 +326,9 @@
 
     // Initial calendar generation
     generateCalendar();
+
+    // Update calendar on window resize
+    window.addEventListener('resize', generateCalendar);
 </script>
 </body>
 </html>
