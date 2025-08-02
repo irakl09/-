@@ -147,7 +147,7 @@
             }
 
             .calendar {
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile */
+                grid-template-columns: repeat(2, 1fr);
                 gap: 4px;
                 padding: 8px;
             }
@@ -176,11 +176,11 @@
 
         @media (max-width: 400px) {
             .calendar {
-                grid-template-columns: 1fr; /* 1 column for very small screens */
+                grid-template-columns: 1fr;
             }
 
             .weekday-header {
-                display: none; /* Hide weekday headers on very small screens */
+                display: none;
             }
         }
     </style>
@@ -226,6 +226,8 @@
     const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
+    const startDate = new Date("2025-08-03"); // Starting point for the schedule
+    const endDate = new Date("2025-12-31"); // End date for the schedule
 
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
@@ -234,7 +236,7 @@
         calendarContainer.innerHTML = '';
 
         // Add weekday headers
-        if (window.innerWidth > 400) { // Show headers only for larger screens
+        if (window.innerWidth > 400) {
             weekdays.forEach(day => {
                 const header = document.createElement("div");
                 header.classList.add("weekday-header");
@@ -243,9 +245,9 @@
             });
         }
 
-        // Calculate dates
-        const startDate = new Date(currentYear, currentMonth, 1);
-        const endDate = new Date(currentYear, currentMonth + 1, 0);
+        // Calculate dates for the current month
+        const monthStart = new Date(currentYear, currentMonth, 1);
+        const monthEnd = new Date(currentYear, currentMonth + 1, 0);
         const currentDateObj = new Date();
         const tomorrowDateObj = new Date(currentDateObj);
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
@@ -254,24 +256,28 @@
         currentMonthDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
 
         // Add empty cells for days before the 1st
-        const firstDay = startDate.getDay();
+        const firstDay = monthStart.getDay();
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement("div");
             calendarContainer.appendChild(emptyCell);
         }
 
-        let dayCount = 0;
-        let currentDate = new Date(startDate);
-
-        while (currentDate <= endDate) {
+        // Calculate days since startDate for work/rest cycle
+        let currentDate = new Date(monthStart);
+        while (currentDate <= monthEnd) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
-            // Work/rest day logic
-            if (Math.floor(dayCount / 2) % 2 === 0) {
-                dateCell.classList.add("green");
+            // Calculate days since startDate
+            const timeDiff = currentDate - startDate;
+            const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const cycleDay = daysSinceStart % 4; // 4-day cycle (2 work, 2 rest)
+
+            // Apply work/rest day styles
+            if (cycleDay < 2) {
+                dateCell.classList.add("green"); // Work days
             } else {
-                dateCell.classList.add("white");
+                dateCell.classList.add("white"); // Rest days
             }
 
             const day = currentDate.getDate();
@@ -302,7 +308,6 @@
 
             calendarContainer.appendChild(dateCell);
             currentDate.setDate(currentDate.getDate() + 1);
-            dayCount++;
         }
     }
 
