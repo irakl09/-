@@ -11,129 +11,228 @@
     <!-- Web App Manifest linking -->
     <link rel="manifest" href="manifest.json">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(to bottom, #FFFFFF, blue, pink);
+        :root {
+            --primary-color: #1e3a8a;
+            --work-day: #22c55e;
+            --rest-day: #ffffff;
+            --past-work-day: #ef4444;
+            --past-rest-day: #fef08a;
+            --text-color: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        h1 {
-            font-size: 12px; 
-            color: #00008b; 
-            text-align: right; 
-            margin: 20px 20px 20px 50px; 
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #bfdbfe);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-color);
         }
 
-        .calendar {
-            max-width: 800px;
+        .container {
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        #message {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            margin: 0;
-            font-size: 18px; 
-            font-weight: bold;
-            color: black; 
-            text-align: left;
-            border: 2px solid black; 
-            padding: 10px; 
-            display: inline-block;
-            border-radius: 8px; 
+        h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
-        #calendar {
+        .message-container {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background: #1e40af;
+        }
+
+        .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 8px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .date-cell {
-            border: 1px solid #ccc;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
+            border-radius: 8px;
+            transition: transform 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .date-cell:hover {
+            transform: scale(1.05);
         }
 
         .green {
-            background-color: green;
+            background-color: var(--work-day);
             color: white;
         }
 
         .white {
-            background-color: white;
-            color: black;
+            background-color: var(--rest-day);
+            color: var(--text-color);
         }
 
         .past-green {
-            background-color: red;
+            background-color: var(--past-work-day);
             color: white;
         }
 
         .past-white {
-            background-color: yellow;
-            color: black;
+            background-color: var(--past-rest-day);
+            color: var(--text-color);
+        }
+
+        .weekday-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .calendar {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 4px;
+            }
+
+            .date-cell {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Volvo განრიგი</h1>
-    <div class="calendar">
-        <div id="message"></div> 
-        <div id="calendar"></div>
+    <div class="container">
+        <h1>Volvo განრიგი</h1>
+        <div class="message-container" id="message"></div>
+        <div class="navigation">
+            <button class="nav-button" onclick="prevMonth()">წინა თვე</button>
+            <span id="current-month"></span>
+            <button class="nav-button" onclick="nextMonth()">შემდეგი თვე</button>
+        </div>
+        <div class="calendar" id="calendar"></div>
     </div>
 
 <script>
+    // Service Worker Registration
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
-            .then(function(registration) {
-                console.log('Service Worker დარეგისტრირდა:', registration);
+            .then(registration => {
+                console.log('Service Worker registered:', registration);
 
                 if (registration.waiting) {
                     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
                 }
 
-                registration.onupdatefound = () => {
+                registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
-                    newWorker.onstatechange = () => {
+                    newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('ახალი ვერსია ხელმისაწვდომია. გვერდი გადაიტვირთება...');
+                            console.log('New version available. Reloading...');
                             window.location.reload();
                         }
-                    };
-                };
-
+                    });
+                });
             })
-            .catch(function(error) {
-                console.log('Service Worker ვერ დარეგისტრირდა:', error);
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
             });
     }
+
+    // Calendar Logic
+    const months = ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"];
+    const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
 
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
         const messageContainer = document.getElementById("message");
-        const startDate = new Date("2025-08-03");
-        const endDate = new Date("2025-12-31");
+        const currentMonthDisplay = document.getElementById("current-month");
+        calendarContainer.innerHTML = '';
 
-        const currentDateObj = new Date(); 
-        const tomorrowDateObj = new Date(currentDateObj); 
+        // Add weekday headers
+        weekdays.forEach(day => {
+            const header = document.createElement("div");
+            header.classList.add("weekday-header");
+            header.innerText = day;
+            calendarContainer.appendChild(header);
+        });
+
+        // Calculate dates
+        const startDate = new Date(currentYear, currentMonth, 1);
+        const endDate = new Date(currentYear, currentMonth + 1, 0);
+        const currentDateObj = new Date();
+        const tomorrowDateObj = new Date(currentDateObj);
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
 
-        const months = ["იან", "თებ", "მარტ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
-        const weekdays = ["კვი", "ორ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
+        // Set current month display
+        currentMonthDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
 
-        let currentDate = startDate;
+        // Add empty cells for days before the 1st
+        const firstDay = startDate.getDay();
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement("div");
+            calendarContainer.appendChild(emptyCell);
+        }
+
         let dayCount = 0;
+        let currentDate = new Date(startDate);
 
         while (currentDate <= endDate) {
             const dateCell = document.createElement("div");
             dateCell.classList.add("date-cell");
 
+            // Work/rest day logic
             if (Math.floor(dayCount / 2) % 2 === 0) {
                 dateCell.classList.add("green");
             } else {
@@ -141,11 +240,10 @@
             }
 
             const day = currentDate.getDate();
-            const month = months[currentDate.getMonth()];
             const weekday = weekdays[currentDate.getDay()];
+            dateCell.innerText = `${day}\n${weekday}`;
 
-            dateCell.innerText = `${day} ${month} (${weekday})`;
-
+            // Past days
             if (currentDate < currentDateObj) {
                 if (dateCell.classList.contains("green")) {
                     dateCell.classList.remove("green");
@@ -156,26 +254,43 @@
                 }
             }
 
+            // Tomorrow message
             if (
                 currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
                 currentDate.getMonth() === tomorrowDateObj.getMonth() &&
                 currentDate.getDate() === tomorrowDateObj.getDate()
             ) {
-                if (dateCell.classList.contains("green")) {
-                    messageContainer.innerHTML = "ხვალ მუშაობ 😱"; 
-                } else if (dateCell.classList.contains("white")) {
-                    messageContainer.innerHTML = "ხვალ არ მუშაობ 😍🥳"; 
-                }
+                messageContainer.innerHTML = dateCell.classList.contains("green")
+                    ? "ხვალ მუშაობ 😱"
+                    : "ხვალ არ მუშაობ 😍🥳";
             }
 
             calendarContainer.appendChild(dateCell);
-            currentDate.setDate(currentDate.getDate() + 1); 
+            currentDate.setDate(currentDate.getDate() + 1);
             dayCount++;
         }
     }
 
+    function prevMonth() {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        generateCalendar();
+    }
+
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        generateCalendar();
+    }
+
+    // Initial calendar generation
     generateCalendar();
 </script>
 </body>
 </html>
-
