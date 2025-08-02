@@ -34,76 +34,86 @@
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f3f4f6, #bfdbfe);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             color: var(--text-color);
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--primary-color);
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .message-container {
             background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1rem;
+            text-align: center;
         }
 
         .navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .nav-button {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 20px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
             transition: background-color 0.3s;
         }
 
-        .nav-button:hover {
+        .nav-button:active {
             background: #1e40af;
         }
 
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 6px;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .date-cell {
-            padding: 15px;
+            padding: 12px;
             text-align: center;
-            border-radius: 8px;
-            transition: transform 0.2s;
-            font-size: 0.9rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            line-height: 1.4;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
         }
 
-        .date-cell:hover {
-            transform: scale(1.05);
+        .date-cell:active {
+            transform: scale(0.95);
         }
 
         .green {
@@ -131,21 +141,85 @@
             text-align: center;
             padding: 10px;
             color: var(--primary-color);
+            font-size: 1rem;
         }
 
+        /* Mobile-specific styles */
         @media (max-width: 600px) {
+            body {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+            }
+
+            .container {
+                padding: 8px;
+            }
+
+            .message-container {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .nav-button {
+                padding: 10px;
+                font-size: 0.9rem;
+                min-width: 100%;
+            }
+
             .calendar {
                 grid-template-columns: repeat(7, 1fr);
                 gap: 4px;
+                padding: 10px;
+            }
+
+            .weekday-header {
+                font-size: 0.85rem;
+                padding: 8px;
             }
 
             .date-cell {
                 padding: 8px;
+                font-size: 0.85rem;
+                min-height: 40px;
+            }
+        }
+
+        /* Extra small screens (e.g., very small phones) */
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            .message-container {
                 font-size: 0.8rem;
             }
 
-            h1 {
-                font-size: 1.5rem;
+            .nav-button {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+
+            .calendar {
+                gap: 3px;
+            }
+
+            .weekday-header {
+                font-size: 0.75rem;
+            }
+
+            .date-cell {
+                font-size: 0.75rem;
+                padding: 6px;
+                min-height: 35px;
             }
         }
     </style>
@@ -234,22 +308,17 @@
 
             // Custom logic for day colors
             if (day === 1) {
-                // Day 1 is always red (past work day)
                 dateCell.classList.add("past-green");
             } else if (day === 2 && 
                 currentDate.getFullYear() === currentDateObj.getFullYear() &&
                 currentDate.getMonth() === currentDateObj.getMonth() &&
                 currentDate.getDate() === currentDateObj.getDate()) {
-                // Day 2 is white if it's today
                 dateCell.classList.add("white");
             } else if (day === 2 && currentDate < currentDateObj) {
-                // Day 2 is red if it's in the past
                 dateCell.classList.add("past-green");
             } else if (day === 3 || day === 4) {
-                // Days 3 and 4 are green
                 dateCell.classList.add("green");
             } else {
-                // Other days are white by default
                 dateCell.classList.add("white");
             }
 
