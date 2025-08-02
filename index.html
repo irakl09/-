@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>volvo განრიგი</title>
+    <title>Volvo განრიგი</title>
     
     <!-- Favicon linking -->
     <link rel="icon" href="j.png" type="image/png">
@@ -82,7 +82,7 @@
     </style>
 </head>
 <body>
-    <h1>ავტობუსის განრიგი</h1>
+    <h1>Volvo განრიგი</h1>
     <div class="calendar">
         <div id="message"></div> 
         <div id="calendar"></div>
@@ -94,7 +94,6 @@
             .then(function(registration) {
                 console.log('Service Worker დარეგისტრირდა:', registration);
 
-                // ✅ აქ ხდება ავტომატური განახლებების შემოწმება
                 if (registration.waiting) {
                     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
                 }
@@ -103,7 +102,6 @@
                     const newWorker = registration.installing;
                     newWorker.onstatechange = () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // ეს შეგატყობინებს მომხმარებელს, რომ განახლება მზადაა
                             console.log('ახალი ვერსია ხელმისაწვდომია. გვერდი გადაიტვირთება...');
                             window.location.reload();
                         }
