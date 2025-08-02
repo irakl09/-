@@ -1,21 +1,21 @@
 {
-  "name": "ავტობუსის განრიგი",
-  "short_name": "ავტობუსის განრიგი",
-  "description": "ავტობუსის განრიგის აპლიკაცია",
-  "start_url": "https://irakl09.github.io/-/",  // თქვენი GitHub Pages URL
+  "name": "Volvo განრიგი",
+  "short_name": "Volvo",
+  "description": "Volvo-ს სამუშაო განრიგის კალენდარი",
+  "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#FFFFFF",  
-  "theme_color": "#0737a0",
+  "background_color": "#f3f4f6",
+  "theme_color": "#1e3a8a",
   "icons": [
     {
-      "src": "j.png",
+      "src": "/1.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "j.jpg",
+      "src": "/1-512.png",
       "sizes": "512x512",
-      "type": "image/jpg"
+      "type": "image/png"
     }
   ]
 }
