@@ -277,7 +277,7 @@
             const cycleDay = daysSinceStart % 4; // 4-day cycle (2 work, 2 rest)
 
             // Apply work/rest day styles
-            if (cycleDay < 2) {
+            if (cycleDay < 2 && cycleDay >= 0) {
                 dateCell.classList.add("green"); // Work days (e.g., 3-4 Aug)
             } else {
                 dateCell.classList.add("white"); // Rest days (e.g., 5-6 Aug)
