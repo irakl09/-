@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volvo განრიგი</title>
     
-    <!-- Favicon linking -->
-    <link rel="icon" href="/1.png" type="image/png">
+    <!-- Favicon linking (supporting both PNG and JPG) -->
+    <link rel="icon" href="1.jpg" type="image/jpeg">
+    <link rel="icon" href="1.png" type="image/png">
     
     <!-- Web App Manifest linking -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
 
-    <!-- Apple Touch Icon for iOS -->
-    <link rel="apple-touch-icon" href="/1.png">
+    <!-- Apple Touch Icon for iOS (supporting both PNG and JPG) -->
+    <link rel="apple-touch-icon" href="1.jpg">
+    <link rel="apple-touch-icon" href="1.png">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -203,7 +205,7 @@
 <script>
     // Service Worker Registration
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('service-worker.js')
             .then(registration => {
                 console.log('Service Worker registered:', registration);
                 if (registration.waiting) {
@@ -229,8 +231,7 @@
     const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
-    const startDate = new Date("2025-08-03"); // Starting point for the schedule
-    const endDate = new Date("2025-12-31"); // End date for the schedule
+    const startDate = new Date("2025-08-01"); // Start from 1 August
 
     function generateCalendar() {
         const calendarContainer = document.getElementById("calendar");
@@ -274,13 +275,13 @@
             // Calculate days since startDate
             const timeDiff = currentDate - startDate;
             const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const cycleDay = daysSinceStart % 4; // 4-day cycle (2 work, 2 rest)
+            const cycleDay = daysSinceStart % 4; // 4-day cycle (2 rest, 2 work)
 
             // Apply work/rest day styles
-            if (cycleDay < 2 && cycleDay >= 0) {
-                dateCell.classList.add("green"); // Work days (e.g., 3-4 Aug)
+            if (cycleDay < 2) {
+                dateCell.classList.add("white"); // Rest days (e.g., 1-2 Aug)
             } else {
-                dateCell.classList.add("white"); // Rest days (e.g., 5-6 Aug)
+                dateCell.classList.add("green"); // Work days (e.g., 3-4 Aug)
             }
 
             const day = currentDate.getDate();
@@ -289,12 +290,12 @@
 
             // Past days
             if (currentDate < currentDateObj) {
-                if (dateCell.classList.contains("green")) {
-                    dateCell.classList.remove("green");
-                    dateCell.classList.add("past-green");
-                } else if (dateCell.classList.contains("white")) {
+                if (dateCell.classList.contains("white")) {
                     dateCell.classList.remove("white");
-                    dateCell.classList.add("past-white");
+                    dateCell.classList.add("past-green"); // 1-2 Aug turn red (past rest treated as past work)
+                } else if (dateCell.classList.contains("green")) {
+                    dateCell.classList.remove("green");
+                    dateCell.classList.add("past-green"); // 3-4 Aug turn red if past
                 }
             }
 
