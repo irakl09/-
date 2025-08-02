@@ -34,14 +34,14 @@
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f3f4f6, #bfdbfe);
             min-height: 100vh;
-            padding: 10px;
+            padding: 15px;
             color: var(--text-color);
         }
 
         .container {
             max-width: 100%;
             margin: 0 auto;
-            padding: 10px;
+            padding: 15px;
         }
 
         h1 {
@@ -76,7 +76,7 @@
             color: white;
             border: none;
             padding: 12px 20px;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
             flex: 1;
@@ -147,16 +147,16 @@
         /* Mobile-specific styles */
         @media (max-width: 600px) {
             body {
-                padding: 8px;
+                padding: 10px;
             }
 
             h1 {
-                font-size: 1.4rem;
+                font-size: 1.5rem;
                 margin-bottom: 1rem;
             }
 
             .container {
-                padding: 8px;
+                padding: 10px;
             }
 
             .message-container {
@@ -165,42 +165,42 @@
             }
 
             .navigation {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 8px;
             }
 
             .nav-button {
                 padding: 10px;
                 font-size: 0.9rem;
-                min-width: 100%;
+                min-width: 45%;
             }
 
             .calendar {
                 grid-template-columns: repeat(7, 1fr);
-                gap: 4px;
+                gap: 5px;
                 padding: 10px;
             }
 
             .weekday-header {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
                 padding: 8px;
             }
 
             .date-cell {
                 padding: 8px;
-                font-size: 0.85rem;
-                min-height: 40px;
+                font-size: 0.9rem;
+                min-height: 45px;
             }
         }
 
-        /* Extra small screens (e.g., very small phones) */
+        /* Extra small screens */
         @media (max-width: 360px) {
             h1 {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
 
             .message-container {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
 
             .nav-button {
@@ -209,17 +209,17 @@
             }
 
             .calendar {
-                gap: 3px;
+                gap: 4px;
             }
 
             .weekday-header {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
             }
 
             .date-cell {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
                 padding: 6px;
-                min-height: 35px;
+                min-height: 40px;
             }
         }
     </style>
@@ -299,6 +299,7 @@
             calendarContainer.appendChild(emptyCell);
         }
 
+        let dayCount = 0;
         let currentDate = new Date(startDate);
 
         while (currentDate <= endDate) {
@@ -306,20 +307,25 @@
             dateCell.classList.add("date-cell");
             const day = currentDate.getDate();
 
-            // Custom logic for day colors
+            // Custom color logic for days 1, 2, 3, 4
             if (day === 1) {
-                dateCell.classList.add("past-green");
+                dateCell.classList.add("past-green"); // Day 1 is red (past work day)
             } else if (day === 2 && 
                 currentDate.getFullYear() === currentDateObj.getFullYear() &&
                 currentDate.getMonth() === currentDateObj.getMonth() &&
                 currentDate.getDate() === currentDateObj.getDate()) {
-                dateCell.classList.add("white");
+                dateCell.classList.add("white"); // Day 2 is white if today
             } else if (day === 2 && currentDate < currentDateObj) {
-                dateCell.classList.add("past-green");
+                dateCell.classList.add("past-green"); // Day 2 is red if past
             } else if (day === 3 || day === 4) {
-                dateCell.classList.add("green");
+                dateCell.classList.add("green"); // Days 3 and 4 are green
             } else {
-                dateCell.classList.add("white");
+                // Original 2-day work/rest pattern for other days
+                if (Math.floor(dayCount / 2) % 2 === 0) {
+                    dateCell.classList.add("green");
+                } else {
+                    dateCell.classList.add("white");
+                }
             }
 
             // Apply past day styling
@@ -350,6 +356,7 @@
 
             calendarContainer.appendChild(dateCell);
             currentDate.setDate(currentDate.getDate() + 1);
+            dayCount++;
         }
     }
 
