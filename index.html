@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ka">
 <head>
@@ -291,7 +292,7 @@
             dateCell.innerText = `${day}\n${weekday}`;
 
             // Past days (yesterday and before)
-            if (currentDate < currentDateObj) {
+            if (currentDate < yesterdayDateObj) {
                 if (dateCell.classList.contains("white")) {
                     dateCell.classList.remove("white");
                     dateCell.classList.add("past-green"); // 1 Aug turns red
