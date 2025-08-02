@@ -253,6 +253,8 @@
         const monthStart = new Date(currentYear, currentMonth, 1);
         const monthEnd = new Date(currentYear, currentMonth + 1, 0);
         const currentDateObj = new Date();
+        const yesterdayDateObj = new Date(currentDateObj);
+        yesterdayDateObj.setDate(currentDateObj.getDate() - 1);
         const tomorrowDateObj = new Date(currentDateObj);
         tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
 
@@ -288,14 +290,14 @@
             const weekday = weekdays[currentDate.getDay()];
             dateCell.innerText = `${day}\n${weekday}`;
 
-            // Past days
+            // Past days (yesterday and before)
             if (currentDate < currentDateObj) {
                 if (dateCell.classList.contains("white")) {
                     dateCell.classList.remove("white");
-                    dateCell.classList.add("past-green"); // 1-2 Aug turn red (past rest treated as past work)
+                    dateCell.classList.add("past-green"); // 1 Aug turns red
                 } else if (dateCell.classList.contains("green")) {
                     dateCell.classList.remove("green");
-                    dateCell.classList.add("past-green"); // 3-4 Aug turn red if past
+                    dateCell.classList.add("past-green"); // Past work days turn red
                 }
             }
 
