@@ -40,7 +40,7 @@
             --work-day: #22c55e;
             --rest-day: #ffffff;
             --past-work-day: #6b7280; /* Darker purple for past green (work) days */
-            --past-rest-day: #d8b4fe ; /* Lighter purple for past white (rest) days */
+            --past-rest-day: #d8b4fe; /* Lighter purple for past white (rest) days */
             --text-color: #1f2937;
         }
 
@@ -217,143 +217,143 @@
         <div class="calendar" id="calendar"></div>
     </div>
 
-    <script>
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => {
-                    console.log('Service Worker registered:', registration);
-                    if (registration.waiting) {
-                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                    }
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('New version available. Reloading...');
-                                window.location.reload();
-                            }
-                        });
+<script>
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('Service Worker registered:', registration);
+                if (registration.waiting) {
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('New version available. Reloading...');
+                            window.location.reload();
+                        }
                     });
-                })
-                .catch(error => {
-                    console.error('Service Worker registration failed:', error);
                 });
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
+    }
+
+    // Calendar Logic
+    const months = ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"];
+    const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    const startDate = new Date("2025-08-02"); // Starting point for the schedule
+    const endDate = new Date("2025-12-31"); // End date for the schedule
+
+    function generateCalendar() {
+        const calendarContainer = document.getElementById("calendar");
+        const messageContainer = document.getElementById("message");
+        const currentMonthDisplay = document.getElementById("current-month");
+        calendarContainer.innerHTML = '';
+
+        // Add weekday headers
+        if (window.innerWidth > 400) {
+            weekdays.forEach(day => {
+                const header = document.createElement("div");
+                header.classList.add("weekday-header");
+                header.innerText = day;
+                calendarContainer.appendChild(header);
+            });
         }
 
-        // Calendar Logic
-        const months = ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"];
-        const weekdays = ["კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"];
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        const startDate = new Date("2025-08-02"); // Starting point for the schedule
-        const endDate = new Date("2025-12-31"); // End date for the schedule
+        // Calculate dates for the current month
+        const monthStart = new Date(currentYear, currentMonth, 1);
+        const monthEnd = new Date(currentYear, currentMonth + 1, 0);
+        const currentDateObj = new Date();
+        const tomorrowDateObj = new Date(currentDateObj);
+        tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
 
-        function generateCalendar() {
-            const calendarContainer = document.getElementById("calendar");
-            const messageContainer = document.getElementById("message");
-            const currentMonthDisplay = document.getElementById("current-month");
-            calendarContainer.innerHTML = '';
+        // Set current month display
+        currentMonthDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
 
-            // Add weekday headers
-            if (window.innerWidth > 400) {
-                weekdays.forEach(day => {
-                    const header = document.createElement("div");
-                    header.classList.add("weekday-header");
-                    header.innerText = day;
-                    calendarContainer.appendChild(header);
-                });
+        // Add empty cells for days before the 1st
+        const firstDay = monthStart.getDay();
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement("div");
+            calendarContainer.appendChild(emptyCell);
+        }
+
+        // Calculate days since startDate for work/rest cycle
+        let currentDate = new Date(monthStart);
+        while (currentDate <= monthEnd) {
+            const dateCell = document.createElement("div");
+            dateCell.classList.add("date-cell");
+
+            // Calculate days since startDate
+            const timeDiff = currentDate - startDate;
+            const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const cycleDay = daysSinceStart % 4; // 4-day cycle (2 work, 2 rest)
+
+            // Apply work/rest day styles
+            if (cycleDay < 2) {
+                dateCell.classList.add("green"); // Work days
+            } else {
+                dateCell.classList.add("white"); // Rest days
             }
 
-            // Calculate dates for the current month
-            const monthStart = new Date(currentYear, currentMonth, 1);
-            const monthEnd = new Date(currentYear, currentMonth + 1, 0);
-            const currentDateObj = new Date();
-            const tomorrowDateObj = new Date(currentDateObj);
-            tomorrowDateObj.setDate(currentDateObj.getDate() + 1);
+            const day = currentDate.getDate();
+            const weekday = weekdays[currentDate.getDay()];
+            dateCell.innerText = `${day}\n${weekday}`;
 
-            // Set current month display
-            currentMonthDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
-
-            // Add empty cells for days before the 1st
-            const firstDay = monthStart.getDay();
-            for (let i = 0; i < firstDay; i++) {
-                const emptyCell = document.createElement("div");
-                calendarContainer.appendChild(emptyCell);
-            }
-
-            // Calculate days since startDate for work/rest cycle
-            let currentDate = new Date(monthStart);
-            while (currentDate <= monthEnd) {
-                const dateCell = document.createElement("div");
-                dateCell.classList.add("date-cell");
-
-                // Calculate days since startDate
-                const timeDiff = currentDate - startDate;
-                const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-                const cycleDay = daysSinceStart % 4; // 4-day cycle (2 work, 2 rest)
-
-                // Apply work/rest day styles
-                if (cycleDay < 2) {
-                    dateCell.classList.add("green"); // Work days
-                } else {
-                    dateCell.classList.add("white"); // Rest days
+            // Past days
+            if (currentDate < currentDateObj) {
+                if (dateCell.classList.contains("green")) {
+                    dateCell.classList.remove("green");
+                    dateCell.classList.add("past-green");
+                } else if (dateCell.classList.contains("white")) {
+                    dateCell.classList.remove("white");
+                    dateCell.classList.add("past-white");
                 }
-
-                const day = currentDate.getDate();
-                const weekday = weekdays[currentDate.getDay()];
-                dateCell.innerText = `${day}\n${weekday}`;
-
-                // Past days
-                if (currentDate < currentDateObj) {
-                    if (dateCell.classList.contains("green")) {
-                        dateCell.classList.remove("green");
-                        dateCell.classList.add("past-green");
-                    } else if (dateCell.classList.contains("white")) {
-                        dateCell.classList.remove("white");
-                        dateCell.classList.add("past-white");
-                    }
-                }
-
-                // Tomorrow message
-                if (
-                    currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
-                    currentDate.getMonth() === tomorrowDateObj.getMonth() &&
-                    currentDate.getDate() === tomorrowDateObj.getDate()
-                ) {
-                    messageContainer.innerHTML = dateCell.classList.contains("green")
-                        ? "ხვალ მუშაობ 😱"
-                        : "ხვალ არ მუშაობ 😍🥳";
-                }
-
-                calendarContainer.appendChild(dateCell);
-                currentDate.setDate(currentDate.getDate() + 1);
             }
-        }
 
-        function prevMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
+            // Tomorrow message
+            if (
+                currentDate.getFullYear() === tomorrowDateObj.getFullYear() &&
+                currentDate.getMonth() === tomorrowDateObj.getMonth() &&
+                currentDate.getDate() === tomorrowDateObj.getDate()
+            ) {
+                messageContainer.innerHTML = dateCell.classList.contains("green")
+                    ? "ხვალ მუშაობ 😱"
+                    : "ხვალ არ მუშაობ 😍🥳";
             }
-            generateCalendar();
-        }
 
-        function nextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            generateCalendar();
+            calendarContainer.appendChild(dateCell);
+            currentDate.setDate(currentDate.getDate() + 1);
         }
+    }
 
-        // Initial calendar generation
+    function prevMonth() {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
         generateCalendar();
+    }
 
-        // Update calendar on window resize
-        window.addEventListener('resize', generateCalendar);
-    </script>
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        generateCalendar();
+    }
+
+    // Initial calendar generation
+    generateCalendar();
+
+    // Update calendar on window resize
+    window.addEventListener('resize', generateCalendar);
+</script>
 </body>
 </html>
